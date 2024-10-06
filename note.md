@@ -1,0 +1,4 @@
+- Cloner le fichier modèle
+- Faire les modifications réquises
+- Faire une premiere sauvegarde du fichier générer 
+- Renvoyer le fichier en telechargement au client web
