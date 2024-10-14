@@ -1,5 +1,7 @@
 package com.smartcom.copyexcelfile;
 
+import com.smartcom.copyexcelfile.mysql.Utilisateur;
+import com.smartcom.copyexcelfile.mysql.UtilisateurRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
@@ -10,13 +12,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class ExcelService {
+    private final UtilisateurRepository utilisateurRepository;
 
     // Dossier où tu veux sauvegarder le fichier sur le serveur
     private static final String SAVE_DIR = "D:\\PROJET_INFO\\SPRING_BOOT\\ADVANCE_IT\\PERSONNEL";
+
+    public ExcelService(UtilisateurRepository utilisateurRepository) {
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     // Méthode du service pour cloner et modifier l'Excel en fonction des feuilles demandées
     public byte[] getModifiedExcel(List<Integer> sheetIndexes, String export) throws Exception {
@@ -66,5 +74,20 @@ public class ExcelService {
         try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
             workbook.write(fos);
         }
+    }
+
+    public List<Utilisateur> findAllUser() {
+        return utilisateurRepository.findAll();
+    }
+
+    public Utilisateur saveUser(Utilisateur utilisateur) {
+
+        if(Objects.nonNull(utilisateur.getId()) && utilisateur.getId()>0){
+            Utilisateur u = utilisateurRepository.findById(utilisateur.getId()).get();
+            u.setNom(utilisateur.getNom());
+            u.setPrenom(utilisateur.getPrenom());
+            return utilisateurRepository.save(u);
+        }
+        return utilisateurRepository.save(utilisateur);
     }
 }
